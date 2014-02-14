@@ -1,0 +1,50 @@
+insert into EIH_CHURN_PARAMETER values 
+	(1, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Quantity', 'TOTAL NUMBER OF PRODUCTS OWNED BY THIS CUSTOMER', 'SOHO', 'BUSINESS TYPE', '4', '#', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(2, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Quantity', 'TOTAL NUMBER OF PRODUCTS OWNED BY THIS CUSTOMER', 'SMBE', 'BUSINESS TYPE', '7', '#', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(3, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Quantity', 'TOTAL NUMBER OF PRODUCTS OWNED BY THIS CUSTOMER', 'Corporate', 'BUSINESS TYPE', '10', '#', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(4, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Revenue', 'TOTAL PORTFOLIO VALUE OF THE CUSTOMER', 'SOHO', 'BUSINESS TYPE', '700', '$', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(5, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Revenue', 'TOTAL PORTFOLIO VALUE OF THE CUSTOMER', 'SMBE', 'BUSINESS TYPE', '1700', '$', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(6, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Revenue', 'TOTAL PORTFOLIO VALUE OF THE CUSTOMER', 'Corporate', 'BUSINESS TYPE', '10000', '$', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(7, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Revenue Time Based', 'SIGNIFICANT INCREASE IN PORTFOLIO VALUE OF CUSTOMER IN A FEW DAYS', 'SOHO', 'BUSINESS TYPE', '0.1', '%', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(8, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Revenue Time Based', 'SIGNIFICANT INCREASE IN PORTFOLIO VALUE OF CUSTOMER IN A FEW DAYS', 'SMBE', 'BUSINESS TYPE', '0.1', '%', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(9, 'Significant Product Increase', 'SIGNIFICANT PRODUCT INCREASE SYMPTOM', 'Product Revenue Time Based', 'SIGNIFICANT INCREASE IN PORTFOLIO VALUE OF CUSTOMER IN A FEW DAYS', 'Corporate', 'BUSINESS TYPE', '0.1', '%', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(10, 'No Call Tracking', 'CALL TRACKING NOT ACTIVE ON ALL OF THE PRODUCTS OF A CUSTOMER', 'N/A', 'NOT APPLICABLE', 'N/A', 'NOT APPLICABLE', 'N', 'INDICATOR', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(11, 'Recent Decrease', 'RECENT DECREASE OR PART CANCELLATION SYMPTOM', 'Recent Decrease in Revenue', 'RECENT DECREASE IN REVENUE PERCENTAGE GREATER THAT IS GREATER THAN THE TARGET VALUE', 'N/A', 'NOT APPLICABLE', '0.1', '%', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(12, 'Recent Decrease', 'RECENT DECREASE OR PART CANCELLATION SYMPTOM', 'Part Cancellation', 'ANY PRODUCT CANCELLATIONS ACROSS THE PRODUCT PROTFOLIO OF A LIVE CUSTOMER', 'N/A', 'NOT APPLICABLE', 'C', 'INDICATOR', '2000', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(13, 'Recent Decrease', 'RECENT DECREASE OR PART CANCELLATION SYMPTOM', 'Future Cancel Date', 'CLOSED ORDERS WHOSE OFFER REQUESTED CANCEL DATE IS APPROACHING', 'N/A', 'NOT APPLICABLE', 'N/A', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(14, 'Near End Contractual', 'NEAR END CONTRACTUAL PERIOD SYMPTOM', 'Standalone Offer Reaching Minimum Contractual Term', 'An offer that is not part of a value package reaching minimum contractual term calculated using Actual Start Date and Minimum Term fields stored against the offer', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(15, 'Near End Contractual', 'NEAR END CONTRACTUAL PERIOD SYMPTOM', 'Standalone Offer with Charges Near End Date', 'An offer that is not part of a value package with charges at an itemised level nearing charge end date', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(16, 'Near End Contractual', 'NEAR END CONTRACTUAL PERIOD SYMPTOM', 'Standalone Offer Near Requested End Date', 'An offer that is not part of a value pagckage with requested date ending nearing', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(17, 'Near End Contractual', 'NEAR END CONTRACTUAL PERIOD SYMPTOM', 'Expiring VP Without Any New VP', 'A VP offer that is reaching its anniverary date and there is new VP in the system for this Advertiser', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(18, 'Near End Contractual', 'NEAR END CONTRACTUAL PERIOD SYMPTOM', 'Expiring VP Without Corresponding New VP', 'A VP offer that is reaching its anniverary date and there is no corresponding new VP in the system', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(19, 'YAS Customers Behaviours', 'YELLOW ADVERTISER SITE USERS BEHAVIOUR ANALYSIS', 'Seeking Information to Close Account', 'CUSTOMER SEEKING INFORMATION ON HOW TO CLOSE THE ACCOUNT ON YAS', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', '7', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(20, 'Low Content Score', 'LOW CONTENT SCORE SYMPTOM', 'N/A', 'NOT APPLICABLE', 'N/A', 'NOT APPLICABLE', '0.4', '#', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(21, 'Special Offer Recipients', 'SPECIAL OFFER RECEPIENTS SYMPTOM', 'Special Offer Codes', 'CUSTOMERS WHO HAVE SPECIAL OFFERS', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(22, 'Special Offer Recipients', 'SPECIAL OFFER RECEPIENTS SYMPTOM', 'Special Discount Codes', 'CUSTOMERS WHO HAVE SPECIAL DISCOUNT', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(23, 'Special Offer Recipients', 'SPECIAL OFFER RECEPIENTS SYMPTOM', 'Special Offer Expiring', 'CUSTOMERS WHO HAVE SPECIAL OFFER AND THE OFFER IS EXPIRING SOON', 'N/A', 'NOT APPLICABLE', 'N/A', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(24, 'Special Offer Recipients', 'SPECIAL OFFER RECEPIENTS SYMPTOM', 'Special Discount Expiring', 'CUSTOMERS WHO HAVE SPECIAL DISCOUNT AND THE DISCOUNT IS EXPIRING SOON', 'N/A', 'NOT APPLICABLE', 'N/A', 'INDICATOR', '30', 1, current_date - 1, '31/12/9999 23:59:59', -99);
+insert into EIH_CHURN_PARAMETER values 
+	(25, 'Customers In Credit Treatment Stream', 'Customers currently in delinquent status', 'Customer Locked', 'Customer account is locked', 'N/A', 'NOT APPLICABLE', 'Y', 'INDICATOR', 'N/A', 1, current_date - 1, '31/12/9999 23:59:59', -99);
