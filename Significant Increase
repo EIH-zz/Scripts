@@ -1,0 +1,169 @@
+WITH mq 
+     AS (SELECT FCT.customer_id, 
+                Count(DISTINCT DP.product_code) AS PRODUCT_COUNT,
+				DCMP.CAMPAIGN_VERSION_NO   		AS CAMPAIGN_VERSION_NO,
+                Sum(FCT.kpi_amt)                AS SALES_AMOUNT -- FCT.*
+         FROM   EIH_FACT_KPI_CENTRAL FCT 
+                INNER JOIN eih_dim_brand DB
+		 				ON DB.BRAND_CODE = 'YELLOW'
+				INNER JOIN eih_dim_date DD 
+                        ON FCT.rlshp_start_date_id = DD.date_id 
+                INNER JOIN eih_dim_date DD1 
+                        ON FCT.rlshp_end_date_id = DD1.date_id 
+                INNER JOIN eih_dim_product DP 
+                        ON FCT.product_id = DP.product_id 
+                           AND DP.eff_to_ts = '9999-12-31 23:59:59'
+                           AND DP.LIMITED_INVENTORY_IND <> 'Y' 
+                INNER JOIN eih_dim_kpi DKP 
+                        ON FCT.kpi_id = DKP.kpi_id 
+                           AND DKP.kpi_code = 'KPI2' 
+                INNER JOIN eih_dim_customer DC 
+                        ON FCT.customer_id = DC.customer_id 
+                           AND DC.eff_to_ts = '9999-12-31 23:59:59' 
+                INNER JOIN eih_dim_party DPR 
+                        ON DC.party_id = DPR.party_id 
+                           AND DPR.eff_to_ts = '9999-12-31 23:59:59' 
+				INNER JOIN eih_dim_campaign DCMP
+						ON FCT.CAMPAIGN_ID = DCMP.CAMPAIGN_ID 
+						AND DCMP.eff_to_ts = '9999-12-31 23:59:59' 
+         WHERE  To_date(Substr('2014-02-10 12:00:00', 1, 10), 'YYYY-MM-DD') 
+                BETWEEN 
+                        DD.calendar_date AND DD1.calendar_date 
+                AND FCT.eff_to_ts = '9999-12-31 23:59:59' 
+         GROUP  BY FCT.customer_id, DCMP.CAMPAIGN_VERSION_NO), 
+     old_rev 
+     AS (SELECT FCT.customer_id, 
+                DCMP.CAMPAIGN_VERSION_NO   			AS CAMPAIGN_VERSION_NO,
+				Sum(FCT.kpi_amt) AS SALES_AMOUNT
+         FROM   EIH_FACT_KPI_CENTRAL FCT 
+                INNER JOIN eih_dim_brand DB
+		 				ON DB.BRAND_CODE = 'YELLOW'
+				INNER JOIN eih_dim_date DD 
+                        ON FCT.rlshp_start_date_id = DD.date_id 
+                INNER JOIN eih_dim_date DD1 
+                        ON FCT.rlshp_end_date_id = DD1.date_id 
+                INNER JOIN eih_dim_product DP 
+                        ON FCT.product_id = DP.product_id 
+                        AND DP.LIMITED_INVENTORY_IND <> 'Y' 
+                        AND DP.eff_to_ts = '9999-12-31 23:59:59' 
+                INNER JOIN eih_dim_kpi DKP 
+                        ON FCT.kpi_id = DKP.kpi_id 
+                           AND DKP.kpi_code = 'KPI2' 
+                INNER JOIN eih_dim_customer DC 
+                        ON FCT.customer_id = DC.customer_id 
+                           AND DC.eff_to_ts = '9999-12-31 23:59:59' 
+                INNER JOIN eih_dim_party DPR 
+                        ON DC.party_id = DPR.party_id 
+                           AND DPR.eff_to_ts = '9999-12-31 23:59:59' 
+				INNER JOIN eih_dim_campaign DCMP
+						ON FCT.CAMPAIGN_ID = DCMP.CAMPAIGN_ID 
+						AND DCMP.eff_to_ts = '9999-12-31 23:59:59' 
+         WHERE  To_date(Substr('2014-02-10 12:00:00', 1, 10), 'YYYY-MM-DD') - ( 
+                SELECT 
+                        To_number(Max(duration), 9999) 
+                FROM 
+                        EIH_CDS_DEV2..eih_churn_parameter 
+                WHERE 
+                        churn_symptom_subtype1 = 'Time Based Increase') 
+                BETWEEN 
+                        DD.calendar_date AND DD1.calendar_date 
+                AND FCT.eff_to_ts = '9999-12-31 23:59:59' 
+         GROUP  BY FCT.customer_id, DCMP.CAMPAIGN_VERSION_NO),
+		
+		-- getting a list of customers and their corresponding max campaign version
+		cust_camp
+		AS 
+		(
+		SELECT FCT.customer_id,max(DCMP.CAMPAIGN_VERSION_NO) as MAX_CAMPAIGN_VERSION_NO
+		 FROM   EIH_FACT_KPI_CENTRAL FCT 
+		 INNER JOIN eih_dim_campaign DCMP
+			ON FCT.CAMPAIGN_ID = DCMP.CAMPAIGN_ID 
+			AND DCMP.eff_to_ts = '9999-12-31 23:59:59'
+		 INNER JOIN eih_dim_kpi DKP 
+            ON FCT.kpi_id = DKP.kpi_id 
+            AND DKP.kpi_code = 'KPI2'
+		 INNER JOIN eih_dim_brand DB
+		 	ON DB.BRAND_CODE = 'YELLOW'
+		GROUP BY FCT.customer_id
+		)
+
+----------- TIME BASED INCREASE 
+SELECT 
+	mq.customer_id, 
+    Cast(
+					((mq.sales_amount-(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))/(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))
+					AS VARCHAR(255)
+					) 
+	AS ACTUAL_VALUE,    
+	CCID.target_value, 
+    CASE 
+        WHEN  Cast(
+					((mq.sales_amount-(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))/(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))
+					AS VARCHAR(255)
+					)  >= CCID.target_value THEN 'Y' 
+         ELSE 'N' 
+       END                                   
+	AS CHURN_INDICATOR, 
+	   
+       'Significant Revenue Increase' AS CHURN_SYMPTOM_NAME,
+       'Time Based Increase' AS churn_symptom_subtype1,
+       'IGEN' AS SRC_SYSTEM_CODE 
+FROM   mq
+	   INNER JOIN old_rev
+	   		ON mq.CUSTOMER_ID = old_rev.CUSTOMER_ID
+       INNER JOIN eih_dim_churn_symptom DCS 
+               ON DCS.churn_symptom_name = 'Significant Revenue Increase' 
+                  AND churn_symptom_subtype_name = 'Time Based Increase' 
+       INNER JOIN EIH_CDS_DEV2..EIH_CFG_CHURN_INC_DEC CCID  --cfg table Churn Symptom Increase Decrease
+               ON DCS.Churn_Symptom_ID = CCID.Churn_Symptom_ID
+                  AND DCS.CHURN_SYMPTOM_SUBTYPE_ID = CCID.CHURN_SYMPTOM_SUBTYPE_ID
+                  AND mq.sales_amount > CCID.SPEND_BAND_FROM 
+				  AND mq.sales_amount <=CCID.SPEND_BAND_TO  
+WHERE   Cast(
+					((mq.sales_amount-(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))/(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))
+					AS VARCHAR(255)
+			)  >= CCID.target_value 
+
+----------- CAMPAIGN BASED INCREASE
+UNION ALL
+
+SELECT 
+	mq.customer_id, 
+    Cast(
+					((mq.sales_amount-(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))/(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))
+					AS VARCHAR(255)
+					) 
+	AS ACTUAL_VALUE,    
+	CCID.target_value, 
+    CASE 
+        WHEN  Cast(
+					((mq.sales_amount-(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))/(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))
+					AS VARCHAR(255)
+					)  >= CCID.target_value THEN 'Y' 
+         ELSE 'N' 
+       END                                   
+	AS CHURN_INDICATOR, 
+	   
+       'Significant Revenue Increase' AS CHURN_SYMPTOM_NAME,
+       'Campaign Based Increase' AS churn_symptom_subtype1,
+       'IGEN' AS SRC_SYSTEM_CODE 
+FROM   mq
+	   INNER JOIN cust_camp 
+	   		ON mq.CAMPAIGN_VERSION_NO = cust_camp.MAX_CAMPAIGN_VERSION_NO
+	   INNER JOIN old_rev
+	   		ON mq.CUSTOMER_ID = old_rev.CUSTOMER_ID
+			AND mq.CAMPAIGN_VERSION_NO = old_rev.CAMPAIGN_VERSION_NO
+       INNER JOIN eih_dim_churn_symptom DCS 
+               ON DCS.churn_symptom_name = 'Significant Revenue Increase' 
+                  AND churn_symptom_subtype_name = 'Campaign Based Increase' 
+       INNER JOIN EIH_CDS_DEV2..EIH_CFG_CHURN_INC_DEC CCID  --cfg table Churn Symptom Increase Decrease
+               ON DCS.Churn_Symptom_ID = CCID.Churn_Symptom_ID
+                  AND DCS.CHURN_SYMPTOM_SUBTYPE_ID = CCID.CHURN_SYMPTOM_SUBTYPE_ID
+                  AND mq.sales_amount > CCID.SPEND_BAND_FROM 
+				  AND mq.sales_amount <=CCID.SPEND_BAND_TO  
+WHERE   Cast(
+					((mq.sales_amount-(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))/(case when old_rev.sales_amount = 0 then 1 else old_rev.sales_amount  end))
+					AS VARCHAR(255)
+			)  >= CCID.target_value 
+			
+;
